@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -32,8 +33,9 @@ data class shoppingList (
 fun ShoppingList(){
     var showDialog by remember { mutableStateOf(false ) }
     var inputItemName by remember { mutableStateOf("") }
-    var inputItemQuantity by remember { mutableStateOf("") }
+    var inputItemQuantity by remember { mutableStateOf("1") }
     var sItems by remember { mutableStateOf(listOf<shoppingList>()) }
+    var shopList = shoppingList(101, "Abhinav", 1)
 
     //The below code is to let users enter only values in quantity text box
     val onValueChangeQty: (String) -> Unit = {newText ->
@@ -49,10 +51,9 @@ fun ShoppingList(){
         Button(onClick = { showDialog = true }) {
             Text(text = "Add Item")
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        LazyColumn(modifier = Modifier.fillMaxSize()){
-
-        }
+        Spacer(
+            modifier = Modifier.height(16.dp)
+        )
     }
     if(showDialog){
         AlertDialog(onDismissRequest = { showDialog = false }, confirmButton = { 
@@ -70,7 +71,18 @@ fun ShoppingList(){
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = {
+                    if (inputItemName.isNotBlank()){
+                        val addNewItem = shoppingList(
+                            Id = sItems.size + 1,
+                            name = inputItemName,
+                            quantity = inputItemQuantity.toInt())
+                        sItems = sItems + addNewItem
+                        showDialog = false
+                        inputItemName = ""
+                        inputItemQuantity = "1"
+                    }
+                }) {
                     Text(text = "Add")
                 }
                 Spacer(modifier = Modifier.width(105.dp))
